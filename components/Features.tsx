@@ -20,7 +20,7 @@ import {
   Layers,
   CheckCircle,
 } from "lucide-react";
-import { ScrollReveal } from "./ScrollAnimations";
+import { ScrollReveal, ParallaxLayer } from "./ScrollAnimations";
 
 /* ── Card animation variants ── */
 const cardVariants = {
@@ -179,28 +179,34 @@ export default function Features() {
 
   return (
     <section id="features" ref={ref} className="relative py-20 sm:py-28">
-      {/* Background glows */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full bg-[var(--accent)]/[0.03] blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-[var(--secondary)]/[0.03] blur-[150px] pointer-events-none" />
+      {/* Background glows — parallax depth layers */}
+      <ParallaxLayer speed={-0.15} className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full bg-[var(--accent)]/[0.03] blur-[150px]" />
+      </ParallaxLayer>
+      <ParallaxLayer speed={0.12} className="absolute inset-0 pointer-events-none">
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-[var(--secondary)]/[0.03] blur-[150px]" />
+      </ParallaxLayer>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Section Header */}
-        <ScrollReveal className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06] backdrop-blur-xl mb-6">
-            <Sparkles className="w-3.5 h-3.5 text-[var(--accent)]" />
-            <span className="text-[12px] font-medium text-[var(--text-secondary)] tracking-wide">
-              Core Features
-            </span>
-          </div>
-          <h2 className="text-heading-1 text-[var(--text-primary)]">
-            Everything You Need to{" "}
-            <span className="gradient-text">Master Finance</span>
-          </h2>
-          <p className="section-subheading mt-4">
-            A comprehensive suite of AI-powered tools designed for modern
-            financial operations
-          </p>
-        </ScrollReveal>
+        {/* Section Header — subtle parallax offset */}
+        <ParallaxLayer speed={0.06} className="relative z-10">
+          <ScrollReveal className="text-center mb-14">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06] backdrop-blur-xl mb-6">
+              <Sparkles className="w-3.5 h-3.5 text-[var(--accent)]" />
+              <span className="text-[12px] font-medium text-[var(--text-secondary)] tracking-wide">
+                Core Features
+              </span>
+            </div>
+            <h2 className="text-heading-1 text-[var(--text-primary)]">
+              Everything You Need to{" "}
+              <span className="gradient-text">Master Finance</span>
+            </h2>
+            <p className="section-subheading mt-4">
+              A comprehensive suite of AI-powered tools designed for modern
+              financial operations
+            </p>
+          </ScrollReveal>
+        </ParallaxLayer>
 
         {/* ── Bento Feature Grid ── */}
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4">

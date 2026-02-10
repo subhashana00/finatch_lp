@@ -1,12 +1,13 @@
 "use client";
 
-import { ReactNode, useRef } from "react";
+import { ReactNode, useRef, useEffect, useState } from "react";
 import {
   motion,
   useScroll,
   useTransform,
   useInView,
   useSpring,
+  useMotionValueEvent,
   MotionValue,
 } from "framer-motion";
 
@@ -311,5 +312,154 @@ export function MagneticHover({
     >
       {children}
     </div>
+  );
+}
+
+/* ─── Multi-layer Parallax (for hero backgrounds) ─── */
+export function ParallaxLayer({
+  children,
+  className = "",
+  speed = 0.3,
+  direction = "vertical",
+  rotate = 0,
+  scale: scaleRange,
+  opacity: opacityRange,
+}: {
+  children: ReactNode;
+  className?: string;
+  speed?: number;
+  direction?: "vertical" | "horizontal";
+  rotate?: number;
+  scale?: [number, number];
+  opacity?: [number, number];
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const yRange = useTransform(
+    scrollYProgress,
+    [0, 1],
+    direction === "vertical" ? [speed * 150, speed * -150] : [0, 0]
+  );
+  const xRange = useTransform(
+    scrollYProgress,
+    [0, 1],
+    direction === "horizontal" ? [speed * 150, speed * -150] : [0, 0]
+  );
+  const rotateRange = useTransform(scrollYProgress, [0, 1], [0, rotate]);
+  const scaleValue = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    scaleRange ? [scaleRange[0], 1, scaleRange[1]] : [1, 1, 1]
+  );
+  const opacityValue = useTransform(
+    scrollYProgress,
+    [0, 0.3, 0.7, 1],
+    opacityRange ? [opacityRange[0], 1, 1, opacityRange[1]] : [1, 1, 1, 1]
+  );
+
+  const smoothY = useSpring(yRange, { stiffness: 80, damping: 25 });
+  const smoothX = useSpring(xRange, { stiffness: 80, damping: 25 });
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{
+        y: smoothY,
+        x: smoothX,
+        rotate: rotateRange,
+        scale: scaleValue,
+        opacity: opacityValue,
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ─── Horizontal Scroll Section (vertical scroll → horizontal movement) ─── */
+export function HorizontalScrollSection({
+  children,
+  className = "",
+  contentClassName = "",
+  speed = 1,
+}: {
+  children: ReactNode;
+  className?: string;
+  contentClassName?: string;
+  speed?: number;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrollWidth, setScrollWidth] = useState(0);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      const measure = () => {
+        const totalWidth = scrollRef.current!.scrollWidth;
+        const viewWidth = scrollRef.current!.offsetWidth;
+        setScrollWidth(totalWidth - viewWidth);
+      };
+      measure();
+      window.addEventListener("resize", measure);
+      return () => window.removeEventListener("resize", measure);
+    }
+  }, [children]);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  const x = useTransform(scrollYProgress, [0, 1], [0, -scrollWidth * speed]);
+  const smoothX = useSpring(x, { stiffness: 60, damping: 30 });
+
+  return (
+    <div ref={containerRef} className={`relative ${className}`} style={{ height: `${Math.max(200, scrollWidth * 0.6)}px` }}>
+      <div className="sticky top-0 h-screen flex items-center overflow-hidden">
+        <motion.div
+          ref={scrollRef}
+          style={{ x: smoothX }}
+          className={`flex ${contentClassName}`}
+        >
+          {children}
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Parallax Background (full-section depth parallax) ─── */
+export function ParallaxBackground({
+  children,
+  className = "",
+  intensity = 0.3,
+}: {
+  children: ReactNode;
+  className?: string;
+  intensity?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], [intensity * 200, intensity * -200]);
+  const smoothY = useSpring(y, { stiffness: 50, damping: 20 });
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.05, 1, 1.05]);
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ y: smoothY, scale }}
+      className={className}
+    >
+      {children}
+    </motion.div>
   );
 }

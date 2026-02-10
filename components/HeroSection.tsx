@@ -21,7 +21,7 @@ import {
   ArrowUpRight,
   Check,
 } from "lucide-react";
-import { MagneticHover, Parallax } from "./ScrollAnimations";
+import { MagneticHover, Parallax, ParallaxLayer } from "./ScrollAnimations";
 
 /* ═══════════════════════════════════════════
    Animated Counter
@@ -156,10 +156,16 @@ export default function HeroSection() {
       {/* ── Background Layers ── */}
       <div className="absolute inset-0 z-0 bg-[var(--surface)]" />
 
-      {/* Gradient orbs */}
-      <div className="absolute top-[-15%] left-[-5%] w-[600px] h-[600px] rounded-full bg-[var(--accent)]/[0.06] blur-[130px] animate-[float_14s_ease-in-out_infinite] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-8%] w-[500px] h-[500px] rounded-full bg-[var(--secondary)]/[0.04] blur-[120px] animate-[float-reverse_16s_ease-in-out_infinite] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full bg-[var(--accent)]/[0.025] blur-[160px] pointer-events-none" />
+      {/* Gradient orbs — parallax layers at different depths */}
+      <ParallaxLayer speed={-0.15} className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-15%] left-[-5%] w-[600px] h-[600px] rounded-full bg-[var(--accent)]/[0.06] blur-[130px] animate-[float_14s_ease-in-out_infinite]" />
+      </ParallaxLayer>
+      <ParallaxLayer speed={0.12} className="absolute inset-0 pointer-events-none">
+        <div className="absolute bottom-[-10%] right-[-8%] w-[500px] h-[500px] rounded-full bg-[var(--secondary)]/[0.04] blur-[120px] animate-[float-reverse_16s_ease-in-out_infinite]" />
+      </ParallaxLayer>
+      <ParallaxLayer speed={-0.08} scale={[0.95, 1.05]} className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full bg-[var(--accent)]/[0.025] blur-[160px]" />
+      </ParallaxLayer>
 
       {/* Mouse-following spotlight */}
       <div
@@ -169,15 +175,17 @@ export default function HeroSection() {
         }}
       />
 
-      {/* Dot grid pattern */}
-      <div
-        className="absolute inset-0 z-[1] opacity-[0.035] pointer-events-none"
-        style={{
-          backgroundImage:
-            "radial-gradient(rgba(113,103,234,1) 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-        }}
-      />
+      {/* Dot grid pattern — slower parallax for depth */}
+      <ParallaxLayer speed={-0.05} className="absolute inset-0 z-[1] pointer-events-none">
+        <div
+          className="absolute inset-[-20%] opacity-[0.035]"
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(113,103,234,1) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+      </ParallaxLayer>
 
       {/* Noise texture overlay */}
       <div
@@ -187,8 +195,8 @@ export default function HeroSection() {
         }}
       />
 
-      {/* Subtle rotating conic rays */}
-      <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
+      {/* Subtle rotating conic rays — deepest parallax layer */}
+      <ParallaxLayer speed={-0.2} rotate={8} className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] opacity-[0.015]"
           style={{
@@ -197,7 +205,7 @@ export default function HeroSection() {
             animation: "rotate-slow 80s linear infinite",
           }}
         />
-      </div>
+      </ParallaxLayer>
 
       {/* ── Main Content ── */}
       <motion.div

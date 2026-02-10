@@ -183,15 +183,13 @@ export default function Header() {
                 )}
               </button>
               <a
-                href="#pricing"
-                onClick={(e) => handleNavClick(e, "#pricing")}
+                href="/sign-in"
                 className="text-[13px] font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors px-3 py-2"
               >
                 Sign In
               </a>
               <a
-                href="#hero"
-                onClick={(e) => handleNavClick(e, "#hero")}
+                href="/sign-up"
                 className="btn-primary text-[13px] !px-5 !py-2 btn-glow inline-flex items-center gap-2"
               >
                 Get Started
@@ -301,15 +299,13 @@ export default function Header() {
 
               <div className="mt-5 pt-5 border-t border-[var(--glass-border)] space-y-3">
                 <a
-                  href="#pricing"
-                  onClick={(e) => handleNavClick(e, "#pricing")}
+                  href="/sign-in"
                   className="block text-center text-[15px] font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] py-2.5 rounded-xl transition-colors"
                 >
                   Sign In
                 </a>
                 <a
-                  href="#hero"
-                  onClick={(e) => handleNavClick(e, "#hero")}
+                  href="/sign-up"
                   className="flex items-center justify-center gap-2 btn-primary !py-3 btn-glow text-[15px]"
                 >
                   Get Started Free
